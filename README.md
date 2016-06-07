@@ -1,11 +1,10 @@
 # errorh
-Custom staic error pages for Hapi.
-
+Custom static error pages for Hapi. 
 This plugin depends on [inert](https://github.com/hapijs/inert) to [function](https://github.com/hapijs/inert#customized-file-response).
 
 Similarly, please ensure that the [route files](https://github.com/hapijs/hapi/blob/master/API.md#route.config.files) are configured.
-
 A [static file route](https://github.com/hapijs/inert#static-file-server) must already be in place.
+
 If not, you may use the `staticRoute` option to specify one.
 
 [![npm version](https://badge.fury.io/js/errorh.svg)](https://badge.fury.io/js/errorh)
