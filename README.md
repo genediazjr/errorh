@@ -1,11 +1,11 @@
 # errorh
 Custom static error pages for Hapi. 
-This plugin depends on [inert](https://github.com/hapijs/inert) to [function](https://github.com/hapijs/inert#customized-file-response).
+**This plugin depends on [inert](https://github.com/hapijs/inert) to [function](https://github.com/hapijs/inert#customized-file-response).**
 
 Similarly, please ensure that the [route files](https://github.com/hapijs/hapi/blob/master/API.md#route.config.files) are configured.
 A [static file route](https://github.com/hapijs/inert#static-file-server) must already be in place.
 
-If not, you may use the `staticRoute` option to specify one.
+If not, you may use the `staticRoute` option to [specify one](https://github.com/hapijs/inert#the-directory-handler).
 
 [![npm version](https://badge.fury.io/js/errorh.svg)](https://badge.fury.io/js/errorh)
 [![Dependency Status](https://david-dm.org/genediazjr/errorh.svg)](https://david-dm.org/genediazjr/errorh)
@@ -16,12 +16,24 @@ If not, you may use the `staticRoute` option to specify one.
 ## Usage
 
 ```js
+// configuring route files
+const server = new Hapi.Server({
+    connections: {
+        routes: {
+            files: {
+                relativeTo: '/path/to/files'
+            }
+        }
+    }
+});
+
+// registering the plugin
 server.register({
     register: require('errorh'),
     options: {
         errorFiles: {
             404: '404.html',
-            default: 'error.html'
+            default: '50x.html'
         },
         staticRoute: {
              path: '/{path*}',
@@ -55,7 +67,7 @@ registrations: [
 
 ## Options
 * **errorFiles** - `object` containing the status code to file config.
-* **staticRoute** - `route object` for setting up the inert static file route.
+* **staticRoute** - `route object` for setting up the inert static [directory handler](https://github.com/hapijs/inert#the-directory-handler).
 
 ## Contributing
 * Include 100% test coverage.
