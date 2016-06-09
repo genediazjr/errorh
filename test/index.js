@@ -92,8 +92,10 @@ describe('registration and functionality', () => {
         register({
             errorFiles: {
                 404: '404.html'
-            },
-            staticRoute: {
+            }
+        }, (err) => {
+
+            server.route({
                 path: '/{path*}',
                 method: '*',
                 handler: {
@@ -103,8 +105,7 @@ describe('registration and functionality', () => {
                         redirectToSlash: true
                     }
                 }
-            }
-        }, (err) => {
+            });
 
             expect(err).to.not.exist();
 
@@ -119,12 +120,21 @@ describe('registration and functionality', () => {
                     error: 'Not Implemented'
                 });
 
-                return done();
+                server.inject({
+                    method: 'get',
+                    url: '/test'
+                }, (res) => {
+
+                    expect(res.statusCode).to.be.equal(404);
+                    expect(res.result).to.equal('Sorry, that page doesn’t exist.\n');
+
+                    return done();
+                });
             });
         });
     });
 
-    it('loads static routes', (done) => {
+    it('uses staticRoutes', (done) => {
 
         register({
             errorFiles: {
@@ -169,6 +179,92 @@ describe('registration and functionality', () => {
 
                         expect(res.statusCode).to.be.equal(500);
                         expect(res.result).to.equal('Sorry, but the server has encountered an error.\n');
+
+                        return done();
+                    });
+                });
+            });
+        });
+    });
+
+    it('doesnt work without configured route files', (done) => {
+
+        const someServer = new Hapi.Server({ debug: false });
+        someServer.connection();
+
+        someServer.route({
+            method: 'get',
+            path: '/error',
+            handler: (request, reply) => {
+
+                return reply(Boom.badImplementation());
+            }
+        });
+
+        someServer.route({
+            method: 'get',
+            path: '/none',
+            handler: (request, reply) => {
+
+                return reply(Boom.notImplemented());
+            }
+        });
+
+        someServer.register([
+            Inert,
+            {
+                register: Plugin,
+                options: {
+                    errorFiles: {
+                        404: '404.html',
+                        default: '50x.html'
+                    },
+                    staticRoute: {
+                        path: '/{path*}',
+                        method: '*',
+                        handler: {
+                            directory: {
+                                path: './',
+                                index: true,
+                                redirectToSlash: true
+                            }
+                        }
+                    }
+                }
+            }
+        ], (err) => {
+
+            expect(err).to.not.exist();
+
+            someServer.inject({
+                method: 'get',
+                url: '/'
+            }, (res) => {
+
+                expect(res.statusCode).to.be.equal(404);
+                expect(res.result).to.equal({
+                    statusCode: 404,
+                    error: 'Not Found'
+                });
+
+                someServer.inject({
+                    method: 'get',
+                    url: '/test'
+                }, (res) => {
+
+                    expect(res.statusCode).to.be.equal(302);
+                    expect(res.result).to.not.exist();
+
+                    someServer.inject({
+                        method: 'get',
+                        url: '/error'
+                    }, (res) => {
+
+                        expect(res.statusCode).to.be.equal(404);
+                        expect(res.result).to.equal({
+                            statusCode: 404,
+                            error: 'Not Found'
+                        });
 
                         return done();
                     });
