@@ -69,6 +69,8 @@ registrations: [
 * **errorFiles** - `object` containing the status code to file config.
 * **staticRoute** - `route object` for setting up the inert static [directory handler](https://github.com/hapijs/inert#the-directory-handler).
 
+You can disable the plugin on a specific routes through `config: { plugins: { errorh: false } }`.
+
 ## Contributing
 * Include 100% test coverage.
 * Follow the [Hapi coding conventions](http://hapijs.com/styleguide)

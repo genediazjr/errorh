@@ -1,6 +1,6 @@
 {
   "name": "errorh",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": "Gene Diaz <genediazjr@gmail.com> (http://genediazjr.com/)",
   "description": "Custom error pages for Hapi",
   "keywords": [

@@ -187,6 +187,69 @@ describe('registration and functionality', () => {
         });
     });
 
+    it('can be disabled per route', (done) => {
+
+        register({
+            errorFiles: {
+                404: '404.html',
+                default: '50x.html'
+            },
+            staticRoute: {
+                path: '/{path*}',
+                method: '*',
+                handler: {
+                    directory: {
+                        path: './',
+                        index: true,
+                        redirectToSlash: true
+                    }
+                }
+            }
+        }, (err) => {
+
+            expect(err).to.not.exist();
+
+            server.route({
+                method: 'get',
+                path: '/disabled',
+                handler: (request, reply) => {
+
+                    return reply(Boom.notFound());
+                },
+                config: { plugins: { errorh: false } }
+            });
+
+            server.inject({
+                method: 'get',
+                url: '/none'
+            }, (res) => {
+
+                expect(res.statusCode).to.be.equal(501);
+                expect(res.result).to.equal('Sorry, but the server has encountered an error.\n');
+
+                server.inject({
+                    method: 'get',
+                    url: '/test'
+                }, (res) => {
+
+                    expect(res.statusCode).to.be.equal(404);
+                    expect(res.result).to.equal('Sorry, that page doesn’t exist.\n');
+
+                    server.inject({
+                        method: 'get',
+                        url: '/disabled'
+                    }, (res) => {
+
+                        expect(res.statusCode).to.be.equal(404);
+                        expect(res.result).to.equal({ statusCode: 404, error: 'Not Found' });
+
+                        return done();
+                    });
+                });
+            });
+        });
+    });
+
     it('doesnt work without configured route files', (done) => {
 
         const someServer = new Hapi.Server({ debug: false });
