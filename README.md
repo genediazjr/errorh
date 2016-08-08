@@ -1,4 +1,11 @@
 # errorh
+[![Build Status](https://travis-ci.org/genediazjr/errorh.svg?branch=master)](https://travis-ci.org/genediazjr/errorh)
+[![Coverage Status](https://coveralls.io/repos/github/genediazjr/errorh/badge.svg)](https://coveralls.io/github/genediazjr/errorh)
+[![Code Climate](https://codeclimate.com/github/genediazjr/errorh/badges/gpa.svg)](https://codeclimate.com/github/genediazjr/errorh)
+[![npm](https://img.shields.io/npm/dt/errorh.svg?maxAge=2592000)](https://www.npmjs.com/errorh)
+[![npm version](https://badge.fury.io/js/errorh.svg)](https://www.npmjs.com/errorh)
+[![Dependency Status](https://david-dm.org/genediazjr/errorh.svg)](https://david-dm.org/genediazjr/errorh)
+
 Custom static error pages for Hapi. 
 **This plugin depends on [inert](https://github.com/hapijs/inert) to [function](https://github.com/hapijs/inert#customized-file-response).**
 
@@ -6,12 +13,6 @@ Similarly, please ensure that the [route files](https://github.com/hapijs/hapi/b
 A [static file route](https://github.com/hapijs/inert#static-file-server) must already be in place.
 
 If not, you may use the `staticRoute` option to [specify one](https://github.com/hapijs/inert#the-directory-handler).
-
-[![npm version](https://badge.fury.io/js/errorh.svg)](https://badge.fury.io/js/errorh)
-[![Dependency Status](https://david-dm.org/genediazjr/errorh.svg)](https://david-dm.org/genediazjr/errorh)
-[![Build Status](https://travis-ci.org/genediazjr/errorh.svg?branch=master)](https://travis-ci.org/genediazjr/errorh)
-[![Coverage Status](https://coveralls.io/repos/github/genediazjr/errorh/badge.svg)](https://coveralls.io/github/genediazjr/errorh)
-[![Code Climate](https://codeclimate.com/github/genediazjr/errorh/badges/gpa.svg)](https://codeclimate.com/github/genediazjr/errorh)
 
 ## Usage
 
