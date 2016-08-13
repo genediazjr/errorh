@@ -2,11 +2,13 @@
 [![Build Status](https://travis-ci.org/genediazjr/errorh.svg?branch=master)](https://travis-ci.org/genediazjr/errorh)
 [![Coverage Status](https://coveralls.io/repos/github/genediazjr/errorh/badge.svg)](https://coveralls.io/github/genediazjr/errorh)
 [![Code Climate](https://codeclimate.com/github/genediazjr/errorh/badges/gpa.svg)](https://codeclimate.com/github/genediazjr/errorh)
-[![npm](https://img.shields.io/npm/dt/errorh.svg?maxAge=2592000)](https://www.npmjs.com/errorh)
-[![npm version](https://badge.fury.io/js/errorh.svg)](https://www.npmjs.com/errorh)
+[![NPM Downloads](https://img.shields.io/npm/dt/errorh.svg?maxAge=2592000)](https://www.npmjs.com/errorh)
+[![NPM Version](https://badge.fury.io/js/errorh.svg)](https://www.npmjs.com/errorh)
 [![Dependency Status](https://david-dm.org/genediazjr/errorh.svg)](https://david-dm.org/genediazjr/errorh)
+[![Known Vulnerabilities](https://snyk.io/test/github/genediazjr/errorh/badge.svg)](https://snyk.io/test/github/genediazjr/errorh)
+[![NSP Status](https://nodesecurity.io/orgs/genediazjr/projects/009fd1b4-b96e-489c-88c9-21661bde403b/badge)](https://nodesecurity.io/orgs/genediazjr/projects/009fd1b4-b96e-489c-88c9-21661bde403b)
 
-Custom static error pages for Hapi. 
+Custom static error pages for Hapi.
 **This plugin depends on [inert](https://github.com/hapijs/inert) to [function](https://github.com/hapijs/inert#customized-file-response).**
 
 Similarly, please ensure that the [route files](https://github.com/hapijs/hapi/blob/master/API.md#route.config.files) are configured.
@@ -59,7 +61,7 @@ registrations: [
         plugin: {
             register: 'errorh',
             options: [
-                ... 
+                ...
             ]
         }
     }
