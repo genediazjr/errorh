@@ -25,9 +25,9 @@
   "devDependencies": {
     "coveralls": "2.11.x",
     "inert": "4.0.x",
-    "hapi": "14.1.x",
-    "boom": "3.2.x",
+    "hapi": "15.0.x",
+    "boom": "4.0.x",
     "code": "3.0.x",
-    "lab": "10.9.x"
+    "lab": "11.0.x"
   }
 }
