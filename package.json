@@ -13,21 +13,21 @@
   "bugs": "https://github.com/genediazjr/errorh/issues",
   "main": "lib/index.js",
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "test": "lab -c -v -L -a code",
     "test-cover": "lab -c -v -L -a code -r html -o ./coverage.html -L && open ./coverage.html"
   },
    "dependencies": {
-       "joi": "~13.0.x"
+       "joi": "13.1.x"
    },
    "devDependencies": {
-       "coveralls": "2.11.x",
-       "inert": "~5.0.x",
-       "hapi": "~17.0.x",
-       "boom": "~7.1.x",
-       "code": "~5.1.x",
-       "lab": "~15.1.x"
+       "coveralls": "3.0.x",
+       "inert": "5.1.x",
+       "hapi": "17.2.x",
+       "boom": "7.2.x",
+       "code": "5.2.x",
+       "lab": "15.4.x"
    }
 }
