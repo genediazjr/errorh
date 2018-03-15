@@ -12,9 +12,13 @@ const lab = exports.lab = Lab.script();
 const beforeEach = lab.beforeEach;
 const describe = lab.describe;
 const it = lab.it;
+
 describe('registration and functionality', () => {
+
     let server;
+
     beforeEach(() => {
+
         server = new Hapi.Server();
         server.path(process.cwd() + '/test')
 

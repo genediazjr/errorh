@@ -13,11 +13,12 @@ const beforeEach = lab.beforeEach;
 const describe = lab.describe;
 const it = lab.it;
 
-
 describe('registration and functionality', () => {
+
     let server;
 
     beforeEach(() => {
+
         server = new Hapi.Server();
         server.path(`${process.cwd()}/test`)
 
@@ -52,18 +53,23 @@ describe('registration and functionality', () => {
             }
         ]);
     };
+
     lab.test('uses errorFiles- NOT IMPLEMENTED', async () => {
+
         register({
             errorFiles: {
                 404: '404.html'
             }
         }).then(() => {});
+
         const options = {
             method: 'get',
             url: '/none'
         }
+
         const response = await server.inject(options);
         const payloads = response.payload;
+
         expect(response.statusCode).to.be.equal(501);
         expect(response.result).to.equal({
             statusCode: 501,

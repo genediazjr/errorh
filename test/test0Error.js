@@ -12,9 +12,13 @@ const lab = exports.lab = Lab.script();
 const beforeEach = lab.beforeEach;
 const describe = lab.describe;
 const it = lab.it;
+
 describe('registration and functionality', () => {
+
     let server;
+
     beforeEach(() => {
+
         server = new Hapi.Server();
         server.path(process.cwd() + '/test')
 
@@ -51,18 +55,23 @@ describe('registration and functionality', () => {
     };
 
     it('registers without option', () => {
+
         register({}).catch((err) => {
             expect(err).to.not.exist();
         });
     });
+
     it('error if invalid options', () => {
+
         register({test: 'value'})
             .catch((err) => {
                 expect(err).to.exist();
 
             });
     });
+
     lab.test('uses errorFiles- NOT IMPLEMENTED', async () => {
+
         register({
             errorFiles: {
                 404: '404.html'
@@ -82,6 +91,7 @@ describe('registration and functionality', () => {
             message: 'Not Implemented'
         });
     });
+
     lab.test('uses errorFiles-Page Does Not Exist', async () => {
 
         register({
