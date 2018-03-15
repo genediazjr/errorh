@@ -20,7 +20,7 @@ describe('registration and functionality', () => {
     beforeEach(() => {
 
         server = new Hapi.Server();
-        server.path(process.cwd() + '/test')
+        server.path(process.cwd() + '/test');
 
         server.route({
             method: 'get',

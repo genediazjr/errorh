@@ -11,7 +11,6 @@ const expect = Code.expect;
 const lab = exports.lab = Lab.script();
 const beforeEach = lab.beforeEach;
 const describe = lab.describe;
-const it = lab.it;
 
 describe('registration and functionality', () => {
 
@@ -20,7 +19,7 @@ describe('registration and functionality', () => {
     beforeEach(() => {
 
         server = new Hapi.Server();
-        server.path(`${process.cwd()}/test`)
+        server.path(`${process.cwd()}/test`);
 
         server.route({
             method: 'get',
@@ -65,10 +64,9 @@ describe('registration and functionality', () => {
         const options = {
             method: 'get',
             url: '/none'
-        }
+        };
 
         const response = await server.inject(options);
-        const payloads = response.payload;
 
         expect(response.statusCode).to.be.equal(501);
         expect(response.result).to.equal({

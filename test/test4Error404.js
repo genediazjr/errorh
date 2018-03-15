@@ -6,21 +6,23 @@ const Code = require('code');
 const Lab = require('lab');
 const Hapi = require('hapi');
 const Plugin = require('../');
+const Path = require('path');
 
 const expect = Code.expect;
 const lab = exports.lab = Lab.script();
 const beforeEach = lab.beforeEach;
 const describe = lab.describe;
-const it = lab.it;
 
 describe('registration and functionality', () => {
 
     let server;
 
     beforeEach(() => {
-
-        server = new Hapi.Server();
-        server.path(`${process.cwd()}/test`)
+        server = new Hapi.Server({routes: {
+            files: {
+                relativeTo: `${Path.join(__dirname)}`
+            }
+        }});
 
         server.route({
             method: 'get',
@@ -55,20 +57,30 @@ describe('registration and functionality', () => {
     };
 
     lab.test('uses errorFiles-Page Does Not Exist', async () => {
-
         register({
             errorFiles: {
                 404: '404.html'
             }
-        }).then(() => {});
+        }).then(() => {
+            server.route({
+                path: '/{path*}',
+                method: '*',
+                handler: {
+                    directory: {
+                        path: './',
+                        index: true,
+                        redirectToSlash: true
+                    }
+                }
+            });
+        });
 
         const options = {
             method: 'get',
-            url: '/get'
-        }
+            url: '/get_bogus'
+        };
 
         const response = await server.inject(options);
-        const payloads = response.payload;
 
         expect(response.statusCode).to.be.equal(404);
         expect(response.result).to.equal('Sorry, that page doesn’t exist.\n');
