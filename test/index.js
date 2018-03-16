@@ -20,17 +20,20 @@ describe('registration and functionality', () => {
 
     beforeEach(() => {
 
-        server = new Hapi.Server({routes: {
-            files: {
-                relativeTo: `${Path.join(__dirname)}`
+        server = new Hapi.Server({
+            routes: {
+                files: {
+                    relativeTo: `${Path.join(__dirname)}`
+                }
             }
-        }});
+        });
 
         server.route({
             method: 'get',
             path: '/error',
             options: {
                 handler: () => {
+
                     return Boom.badImplementation();
                 }
             }
@@ -41,6 +44,7 @@ describe('registration and functionality', () => {
             path: '/none',
             options: {
                 handler: () => {
+
                     return Boom.notImplemented();
                 }
             }
@@ -67,7 +71,7 @@ describe('registration and functionality', () => {
 
     it('error if invalid options', () => {
 
-        register({test: 'value'})
+        register({ test: 'value' })
             .catch((err) => {
                 expect(err).to.exist();
 
@@ -92,11 +96,14 @@ describe('registration and functionality', () => {
                     }
                 }
             }
-        }).then(() => {});
+        }).then(() => {
+        });
+
         const options = {
             method: 'get',
             url: '/'
         };
+
         const response = await server.inject(options);
         expect(response.statusCode).to.be.equal(200);
         expect(response.result).to.equal('index page\n');
@@ -108,12 +115,16 @@ describe('registration and functionality', () => {
             errorFiles: {
                 404: '404.html'
             }
-        }).then(() => {});
+        }).then(() => {
+        });
+
         const options = {
             method: 'get',
             url: '/none'
         };
+
         const response = await server.inject(options);
+
         expect(response.statusCode).to.be.equal(501);
         expect(response.result).to.equal({
             statusCode: 501,
@@ -128,11 +139,14 @@ describe('registration and functionality', () => {
             errorFiles: {
                 404: '404.html'
             }
-        }).then(() => {});
+        }).then(() => {
+        });
+
         const options = {
             method: 'get',
             url: '/get'
         };
+
         const response = await server.inject(options);
         expect(response.statusCode).to.be.equal(404);
         expect(response.result).to.equal('Sorry, that page doesn’t exist.\n');
@@ -145,11 +159,14 @@ describe('registration and functionality', () => {
                 404: '404.html',
                 default: '50x.html'
             }
-        }).then(() => {});
+        }).then(() => {
+        });
+
         const options = {
             method: 'get',
             url: '/error'
         };
+
         const response = await server.inject(options);
         expect(response.statusCode).to.be.equal(500);
         expect(response.result).to.equal('Sorry, but the server has encountered an error.\n');
@@ -173,7 +190,8 @@ describe('registration and functionality', () => {
                     }
                 }
             }
-        }).then(() => {});
+        }).then(() => {
+        });
 
         server.route({
             method: 'get',
@@ -194,6 +212,7 @@ describe('registration and functionality', () => {
         };
 
         const response = await server.inject(options);
+
         expect(response.statusCode).to.be.equal(404);
         expect(response.result).to.equal({
             statusCode: 404,
@@ -201,5 +220,4 @@ describe('registration and functionality', () => {
             message: 'Not Found'
         });
     });
-
 });

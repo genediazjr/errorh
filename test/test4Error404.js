@@ -18,17 +18,21 @@ describe('registration and functionality', () => {
     let server;
 
     beforeEach(() => {
-        server = new Hapi.Server({routes: {
-            files: {
-                relativeTo: `${Path.join(__dirname)}`
+
+        server = new Hapi.Server({
+            routes: {
+                files: {
+                    relativeTo: `${Path.join(__dirname)}`
+                }
             }
-        }});
+        });
 
         server.route({
             method: 'get',
             path: '/error',
             options: {
                 handler: () => {
+
                     return Boom.badImplementation();
                 }
             }
@@ -39,6 +43,7 @@ describe('registration and functionality', () => {
             path: '/none',
             options: {
                 handler: () => {
+
                     return Boom.notImplemented();
                 }
             }
@@ -57,6 +62,7 @@ describe('registration and functionality', () => {
     };
 
     lab.test('uses errorFiles-Page Does Not Exist', async () => {
+
         register({
             errorFiles: {
                 404: '404.html'

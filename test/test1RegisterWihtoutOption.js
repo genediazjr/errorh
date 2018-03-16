@@ -55,6 +55,7 @@ describe('registration and functionality', () => {
     };
 
     it('registers without option', () => {
+
         register({}).catch((err) => {
             expect(err).to.not.exist();
         });

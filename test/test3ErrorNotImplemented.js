@@ -26,6 +26,7 @@ describe('registration and functionality', () => {
             path: '/error',
             options: {
                 handler: () => {
+
                     return Boom.badImplementation();
                 }
             }
@@ -36,6 +37,7 @@ describe('registration and functionality', () => {
             path: '/none',
             options: {
                 handler: () => {
+
                     return Boom.notImplemented();
                 }
             }
@@ -59,7 +61,8 @@ describe('registration and functionality', () => {
             errorFiles: {
                 404: '404.html'
             }
-        }).then(() => {});
+        }).then(() => {
+        });
 
         const options = {
             method: 'get',

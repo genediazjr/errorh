@@ -18,6 +18,7 @@ describe('registration and functionality', () => {
     let server;
 
     beforeEach(() => {
+
         server = new Hapi.Server();
         server.path(process.cwd() + '/test');
 
@@ -52,7 +53,8 @@ describe('registration and functionality', () => {
     };
 
     it('error if invalid options', () => {
-        register({test: 'value'})
+
+        register({ test: 'value' })
             .catch((err) => {
                 expect(err).to.exist();
 
