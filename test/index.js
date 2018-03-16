@@ -1,11 +1,12 @@
 'use strict';
 
 const Inert = require('inert');
-const Hapi = require('hapi');
 const Boom = require('boom');
 const Code = require('code');
 const Lab = require('lab');
+const Hapi = require('hapi');
 const Plugin = require('../');
+const Path = require('path');
 
 const expect = Code.expect;
 const lab = exports.lab = Lab.script();
@@ -17,124 +18,144 @@ describe('registration and functionality', () => {
 
     let server;
 
-    beforeEach((done) => {
+    beforeEach(() => {
 
-        server = new Hapi.Server({
-            connections: {
-                routes: {
-                    files: {
-                        relativeTo: process.cwd() + '/test'
-                    }
-                }
+        server = new Hapi.Server({routes: {
+            files: {
+                relativeTo: `${Path.join(__dirname)}`
             }
-        });
-        server.connection();
+        }});
 
         server.route({
             method: 'get',
             path: '/error',
-            handler: (request, reply) => {
-
-                return reply(Boom.badImplementation());
+            options: {
+                handler: () => {
+                    return Boom.badImplementation();
+                }
             }
         });
 
         server.route({
             method: 'get',
             path: '/none',
-            handler: (request, reply) => {
-
-                return reply(Boom.notImplemented());
+            options: {
+                handler: () => {
+                    return Boom.notImplemented();
+                }
             }
         });
-
-        return done();
     });
 
-    const register = (options, next) => {
-
-        server.register([
+    const register = async (options) => {
+        // Load Plugins
+        return await server.register([
             Inert,
             {
-                register: Plugin,
+                plugin: Plugin,
                 options: options
             }
-        ], (err) => {
-
-            return next(err);
-        });
+        ]);
     };
 
-    it('registers without option', (done) => {
+    it('registers without option', () => {
 
-        register({}, (err) => {
-
+        register({}).catch((err) => {
             expect(err).to.not.exist();
-
-            return done();
         });
     });
 
-    it('errors if invalid options', (done) => {
+    it('error if invalid options', () => {
+
+        register({test: 'value'})
+            .catch((err) => {
+                expect(err).to.exist();
+
+            });
+    });
+
+    lab.test('Uses Static Routes -(200)- SUCCESS', async () => {
 
         register({
-            test: 'value'
-        }, (err) => {
-
-            expect(err).to.exist();
-
-            return done();
-        });
+            errorFiles: {
+                404: '404.html',
+                default: '50x.html'
+            },
+            staticRoute: {
+                path: '/{path*}',
+                method: '*',
+                handler: {
+                    directory: {
+                        path: './',
+                        index: true,
+                        redirectToSlash: true
+                    }
+                }
+            }
+        }).then(() => {});
+        const options = {
+            method: 'get',
+            url: '/'
+        };
+        const response = await server.inject(options);
+        expect(response.statusCode).to.be.equal(200);
+        expect(response.result).to.equal('index page\n');
     });
 
-    it('uses errorFiles', (done) => {
+    lab.test('Uses Error Files -(501) NOT IMPLEMENTED', async () => {
 
         register({
             errorFiles: {
                 404: '404.html'
             }
-        }, (err) => {
-
-            server.route({
-                path: '/{path*}',
-                method: '*',
-                handler: {
-                    directory: {
-                        path: './',
-                        index: true,
-                        redirectToSlash: true
-                    }
-                }
-            });
-
-            expect(err).to.not.exist();
-
-            server.inject({
-                method: 'get',
-                url: '/none'
-            }, (res) => {
-
-                expect(res.statusCode).to.be.equal(501);
-                expect(res.result).to.equal({
-                    statusCode: 501,
-                    error: 'Not Implemented'
-                });
-
-                server.inject({
-                    method: 'get',
-                    url: '/test'
-                }, (res) => {
-
-                    expect(res.statusCode).to.be.equal(404);
-                    expect(res.result).to.equal('Sorry, that page doesn’t exist.\n');
-
-                    return done();
-                });
-            });
+        }).then(() => {});
+        const options = {
+            method: 'get',
+            url: '/none'
+        };
+        const response = await server.inject(options);
+        expect(response.statusCode).to.be.equal(501);
+        expect(response.result).to.equal({
+            statusCode: 501,
+            error: 'Not Implemented',
+            message: 'Not Implemented'
         });
     });
 
-    it('uses staticRoutes', (done) => {
+    lab.test('Uses Error Files -(404)-Page Does Not Exist', async () => {
+
+        register({
+            errorFiles: {
+                404: '404.html'
+            }
+        }).then(() => {});
+        const options = {
+            method: 'get',
+            url: '/get'
+        };
+        const response = await server.inject(options);
+        expect(response.statusCode).to.be.equal(404);
+        expect(response.result).to.equal('Sorry, that page doesn’t exist.\n');
+    });
+
+    lab.test('Uses Error Files -(500)- ERROR 500', async () => {
+
+        register({
+            errorFiles: {
+                404: '404.html',
+                default: '50x.html'
+            }
+        }).then(() => {});
+        const options = {
+            method: 'get',
+            url: '/error'
+        };
+        const response = await server.inject(options);
+        expect(response.statusCode).to.be.equal(500);
+        expect(response.result).to.equal('Sorry, but the server has encountered an error.\n');
+    });
+
+    lab.test('Can be Disabled per Route -(404) pAGE Does Not Exist', async () => {
 
         register({
             errorFiles: {
@@ -152,187 +173,33 @@ describe('registration and functionality', () => {
                     }
                 }
             }
-        }, (err) => {
+        }).then(() => {});
 
-            expect(err).to.not.exist();
-
-            server.inject({
-                method: 'get',
-                url: '/'
-            }, (res) => {
-
-                expect(res.statusCode).to.be.equal(200);
-                expect(res.result).to.equal('index page\n');
-
-                server.inject({
-                    method: 'get',
-                    url: '/test'
-                }, (res) => {
-
-                    expect(res.statusCode).to.be.equal(404);
-                    expect(res.result).to.equal('Sorry, that page doesn’t exist.\n');
-
-                    server.inject({
-                        method: 'get',
-                        url: '/error'
-                    }, (res) => {
-
-                        expect(res.statusCode).to.be.equal(500);
-                        expect(res.result).to.equal('Sorry, but the server has encountered an error.\n');
-
-                        return done();
-                    });
-                });
-            });
-        });
-    });
-
-    it('can be disabled per route', (done) => {
-
-        register({
-            errorFiles: {
-                404: '404.html',
-                default: '50x.html'
-            },
-            staticRoute: {
-                path: '/{path*}',
-                method: '*',
-                handler: {
-                    directory: {
-                        path: './',
-                        index: true,
-                        redirectToSlash: true
-                    }
-                }
-            }
-        }, (err) => {
-
-            expect(err).to.not.exist();
-
-            server.route({
-                method: 'get',
-                path: '/disabled',
-                handler: (request, reply) => {
-
-                    return reply(Boom.notFound());
+        server.route({
+            method: 'get',
+            path: '/disabled',
+            options: {
+                handler: () => {
+                    return Boom.notFound();
                 },
-                config: { plugins: { errorh: false } }
-            });
-
-            server.inject({
-                method: 'get',
-                url: '/none'
-            }, (res) => {
-
-                expect(res.statusCode).to.be.equal(501);
-                expect(res.result).to.equal('Sorry, but the server has encountered an error.\n');
-
-                server.inject({
-                    method: 'get',
-                    url: '/test'
-                }, (res) => {
-
-                    expect(res.statusCode).to.be.equal(404);
-                    expect(res.result).to.equal('Sorry, that page doesn’t exist.\n');
-
-                    server.inject({
-                        method: 'get',
-                        url: '/disabled'
-                    }, (res) => {
-
-                        expect(res.statusCode).to.be.equal(404);
-                        expect(res.result).to.equal({ statusCode: 404, error: 'Not Found' });
-
-                        return done();
-                    });
-                });
-            });
-        });
-    });
-
-    it('doesnt work without configured route files', (done) => {
-
-        const someServer = new Hapi.Server({ debug: false });
-        someServer.connection();
-
-        someServer.route({
-            method: 'get',
-            path: '/error',
-            handler: (request, reply) => {
-
-                return reply(Boom.badImplementation());
-            }
-        });
-
-        someServer.route({
-            method: 'get',
-            path: '/none',
-            handler: (request, reply) => {
-
-                return reply(Boom.notImplemented());
-            }
-        });
-
-        someServer.register([
-            Inert,
-            {
-                register: Plugin,
-                options: {
-                    errorFiles: {
-                        404: '404.html',
-                        default: '50x.html'
-                    },
-                    staticRoute: {
-                        path: '/{path*}',
-                        method: '*',
-                        handler: {
-                            directory: {
-                                path: './',
-                                index: true,
-                                redirectToSlash: true
-                            }
-                        }
-                    }
+                plugins: {
+                    errorh: false
                 }
             }
-        ], (err) => {
+        });
 
-            expect(err).to.not.exist();
+        const options = {
+            method: 'get',
+            url: '/disabled'
+        };
 
-            someServer.inject({
-                method: 'get',
-                url: '/'
-            }, (res) => {
-
-                expect(res.statusCode).to.be.equal(404);
-                expect(res.result).to.equal({
-                    statusCode: 404,
-                    error: 'Not Found'
-                });
-
-                someServer.inject({
-                    method: 'get',
-                    url: '/test'
-                }, (res) => {
-
-                    expect(res.statusCode).to.be.equal(302);
-                    expect(res.result).to.not.exist();
-
-                    someServer.inject({
-                        method: 'get',
-                        url: '/error'
-                    }, (res) => {
-
-                        expect(res.statusCode).to.be.equal(404);
-                        expect(res.result).to.equal({
-                            statusCode: 404,
-                            error: 'Not Found'
-                        });
-
-                        return done();
-                    });
-                });
-            });
+        const response = await server.inject(options);
+        expect(response.statusCode).to.be.equal(404);
+        expect(response.result).to.equal({
+            statusCode: 404,
+            error: 'Not Found',
+            message: 'Not Found'
         });
     });
+
 });

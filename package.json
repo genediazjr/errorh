@@ -19,15 +19,15 @@
     "test": "lab -c -v -L -a code",
     "test-cover": "lab -c -v -L -a code -r html -o ./coverage.html -L && open ./coverage.html"
   },
-   "dependencies": {
-       "joi": "13.1.x"
-   },
-   "devDependencies": {
-       "coveralls": "3.0.x",
-       "inert": "5.1.x",
-       "hapi": "17.2.x",
-       "boom": "7.2.x",
-       "code": "5.2.x",
-       "lab": "15.4.x"
-   }
+  "dependencies": {
+    "joi": "13.1.x"
+  },
+  "devDependencies": {
+    "coveralls": "3.0.x",
+    "inert": "5.1.x",
+    "hapi": "17.2.x",
+    "boom": "7.2.x",
+    "code": "5.2.x",
+    "lab": "15.4.x"
+  }
 }
