@@ -6,7 +6,6 @@
 [![NPM Downloads](https://img.shields.io/npm/dt/errorh.svg?maxAge=2592000)](https://www.npmjs.com/errorh)<br>
 [![Dependency Status](https://david-dm.org/genediazjr/errorh.svg)](https://david-dm.org/genediazjr/errorh)
 [![Known Vulnerabilities](https://snyk.io/test/github/genediazjr/errorh/badge.svg)](https://snyk.io/test/github/genediazjr/errorh)
-[![NSP Status](https://nodesecurity.io/orgs/genediazjr/projects/009fd1b4-b96e-489c-88c9-21661bde403b/badge)](https://nodesecurity.io/orgs/genediazjr/projects/009fd1b4-b96e-489c-88c9-21661bde403b)
 
 Custom static error pages for Hapi.
 **This plugin depends on [inert](https://github.com/hapijs/inert) to [function](https://github.com/hapijs/inert#customized-file-response).**
